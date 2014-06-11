@@ -1,0 +1,100 @@
+#!/bin/sh
+#
+# racoon IKEv1 key management daemon
+#
+# chkconfig: - 15 85
+# description: racoon is an IKEv1 (ISAKMP/Oakley) key management daemon
+# processname: racoon
+# config: /etc/racoon/racoon.conf
+
+### BEGIN INIT INFO
+# Provides: ipsec
+# Required-Start: $network $syslog
+# Required-Stop:
+# Short-Description: IKEv1 key management daemon
+# Description: racoon is an IKEv1 (ISAKMP/Oakley) key management daemon
+### END INIT INFO
+
+# Source function library.
+. /etc/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+exec=/usr/sbin/racoon
+prog=racoon
+conf=/etc/racoon/racoon.conf
+lockfile=/var/lock/subsys/$prog
+
+start() {
+	[ -x $exec ] || exit 5
+	[ -f $config ] || exit 6
+	echo -n $"Starting $prog: "
+	daemon $prog
+	RETVAL=$?
+	echo
+	[ $RETVAL -eq 0 ] && touch $lockfile
+	return $RETVAL
+}
+
+stop() {
+	echo -n $"Stopping $prog: "
+	killproc $prog
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && rm -f $lockfile
+	echo
+	return $RETVAL
+}
+
+dostatus() {
+	status $prog
+}
+
+dostatus_q() {
+	status $prog >/dev/null 2>&1
+}
+
+restart() {
+	stop
+	start
+}
+
+reload() {
+	echo -n $"Reloading $prog: "
+	killproc $prog -HUP
+	RETVAL=$?
+	echo
+	return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	dostatus_q && exit 0
+	$1
+	;;
+  stop)
+	dostatus_q || exit 0
+	$1
+	;;
+  restart)
+	$1
+	;;
+  reload)
+	dostatus_q || exit 7
+	;;
+  force-reload)
+	restart
+	;;
+  condrestart|try-restart)
+	dostatus_q || exit 0
+	restart
+	;;
+  status)
+	dostatus
+	;;
+  *)
+	echo "Usage: $prog {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+	exit 2
+esac
+exit $?

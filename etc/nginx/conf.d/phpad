@@ -1,0 +1,13 @@
+
+    location /phpad {
+        root /var/www/phpad;
+        index index.php;
+        #include /etc/nginx/expires;
+    }
+    location ~ ^/phpad/.+\.php$ {
+        root /var/www/phpad;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME /var/www$fastcgi_script_name;
+        include        fastcgi_params;
+    }

@@ -1,0 +1,8 @@
+image_name="amzn-ami-pv"
+image_version="2014.03"
+image_arch="x86_64"
+image_file="amzn-ami-pv-2014.03.0.x86_64.ext4"
+image_stamp="600c-d80a"
+image_date="20140325060011"
+recipe_name="amzn ami"
+recipe_id="bd43fbd2-1ea4-65a3-c801-c4c8-198d-4dfc-0a5b678f"
